@@ -1,20 +1,5 @@
 FROM ubuntu:14.04
 
-# comment this section out if you live outside firewall
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted" > /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted" >> /etc/apt/sources.list
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe" >> /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted" >> /etc/apt/sources.list
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty universe" >> /etc/apt/sources.list
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty multiverse" >> /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty multiverse" >> /etc/apt/sources.list
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty-updates multiverse" >> /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates multiverse" >> /etc/apt/sources.list
-RUN sudo echo "deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
-RUN sudo echo "deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
-# end F@ck GFW section
-
 RUN sudo echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" >> /etc/apt/sources.list
 
 RUN echo "Updating dependencies..."
@@ -60,6 +45,7 @@ ADD . /home/albireo/
 #"Installing python dependencies..."
 USER root
 RUN pip install -r requirements.txt
+RUN pip install --ignore-installed six
 RUN chmod -R 777 /home/albireo
 
 
@@ -77,7 +63,7 @@ ENV LC_ALL en_US.UTF-8
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
-CMD ["bash", "-c", "/etc/init.d/postgresql start && python /albireo/server.py"]
+CMD ["bash", "-c", "/etc/init.d/postgresql start && python /home/albireo/server.py"]
 # /etc/init.d/postgresql start && python tools.py --db-init && python tools.py --user-add admin 1234 && python tools.py --user-promote admin 3
 # docker volume create --name postgres
 # docker run -it -v "`pwd`:/albireo" -v postgres:/var/lib/postgresql -p 5000:5000 albireo bash
